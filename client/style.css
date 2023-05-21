@@ -1,0 +1,72 @@
+
+html {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  background-image: url("media/background.jpg");
+  background-color: #cccccc;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  padding:10px;
+}
+
+#header {
+  width: 95%;
+  height: 60px;
+  background-color: #00308F;
+  vertical-align: baseline;
+  margin: auto;
+  position:relative;
+}
+#container{
+  text-align: center;
+  min-height:100%;
+  position:relative;
+}
+#content {
+  padding-top : 121px;
+  width: 91.2%;
+  min-height:89vh;
+  position:relative;
+  background-color: rgb(42, 88, 141);
+  opacity: 90%;
+  padding: 1%;
+  padding-bottom: 60px;
+  display: inline-block;
+}
+.buttonStyle {
+  width: 10%; 
+  height: 30px; 
+  margin-left: 2%;
+  top: 50%; 
+  transform: translateY(-80%);
+}
+.left {
+  text-align: left;
+}
+.right {
+  text-align: right;
+}
+#footer {
+  position:fixed;
+  display: inline-block;
+  bottom: 0; 
+  left: 2.5%;
+  right: 2.5%;
+  width: 95%; 
+  height: 60px;
+  background-color: #15cc80;
+}
+.header {
+        height: 8vh;
+        background-color: #6D9BC5;
+        border-style: solid;
+        border-color: #00308F;
+        border-width: 5px;
+        border-radius: 15px 10px 25px 15px;
+        color: #6D9BC5;
+        font-family: 'Akaya Kanadaka';
+        font-size: 1.5vmin;
+}
