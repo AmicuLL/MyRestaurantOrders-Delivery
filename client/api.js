@@ -1,5 +1,5 @@
 var API = { 
-    api: axios.create({ baseURL: "http://localhost:8080/api" }), //main api
+    api: axios.create({ baseURL: "http://amicull.home.ro:8080/api" }), //main api
     addRestaurant: function(name, schedule, description, min_order, std_max_delivery_distance, std_delivery_price, extra_delivery_fee){
         return this.api.post(`/restaurant/create?name=${name}`, 
         new URLSearchParams({schedule, description, min_order, std_max_delivery_distance, std_delivery_price, extra_delivery_fee})) //url encoded
