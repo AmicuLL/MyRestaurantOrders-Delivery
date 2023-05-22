@@ -105,6 +105,9 @@ function HOMEDisplay(data) {
     let orderContent = document.createElement("h3");
     let orderContentInput = document.createElement("textarea");
 
+    let totalOrder = document.createElement("h3");
+    let totalOrderInput = document.createElement("input");
+
     let statusLabel = document.createElement("h3");
     let statusInput = document.createElement("input");
 
@@ -152,6 +155,14 @@ function HOMEDisplay(data) {
         content.appendChild(timestampInput);
         content.appendChild(document.createElement("br"));
 
+        totalOrder.style.display = "inline-block";
+        totalOrder.style.margin = "0.5% 2% 0.5% 0";
+        content.appendChild(totalOrder);
+        totalOrderInput.readOnly = true;
+        totalOrderInput.style.backgroundColor = "transparent";
+        content.appendChild(totalOrderInput);
+        content.appendChild(document.createElement("br"));
+
         content.appendChild(orderContent);
         data.content.forEach(d => {
             orderContentInput = document.createElement("textarea");
@@ -162,6 +173,14 @@ function HOMEDisplay(data) {
             content.appendChild(orderContentInput);
             content.appendChild(document.createElement("br"));
         });
+
+        totalOrder.style.display = "inline-block";
+        totalOrder.style.margin = "0.5% 2% 0.5% 0";
+        content.appendChild(totalOrder);
+        totalOrderInput.readOnly = true;
+        totalOrderInput.style.backgroundColor = "transparent";
+        content.appendChild(totalOrderInput);
+        content.appendChild(document.createElement("br"));
 
         statusLabel.style.display = "inline-block";
         statusLabel.style.margin = "0.5% 2% 0.5% 0";
@@ -192,6 +211,9 @@ function HOMEDisplay(data) {
     data.content.forEach((data, index) => {
         orderContentInput[index].value = `Product ${index+1}:\n\tFood: ${data.food.name}\n\tQuantity: ${data.qty}\n\tYour mentions: ${data.mentions}`;
     });
+
+    totalOrder.innerHTML = "Total:";
+    totalOrderInput.value = `${data.total}$`;
 
     statusLabel.innerHTML = "Status: ";
     statusInput.value = data.status;
@@ -365,10 +387,10 @@ function Cart() {
 
     let variable = 0;
 
-    if (!cart.length) { //cart variable is global. cart: [qty: X, mentions: "X", food:{ name: "X"...}]
-        let aux = document.createElement("h4");
-        aux.innerHTML = "No products yet in the cart.";
-        content.appendChild(aux);
+    if (!cart.length) { //cart variable is global (declared in actions.js). cart: [qty: X, mentions: "X", food:{ name: "X", description: "X",...}]
+        let info = document.createElement("h4");
+        info.innerHTML = "There are no products in the cart yet.";
+        content.appendChild(info);
     } else {
         cart.forEach((element, i) => { //creating fields for cart information for n elements in the cart
             let cDiv = document.createElement("div");
@@ -412,14 +434,37 @@ function Cart() {
     }
 }
 function AddToCart(restaurantId, id) {
-    qty = prompt("Quantity:", "1");
-    mentions = prompt("Mentions:", "No mentions");
-    actions.cart(restaurantId, id, qty, mentions);
+    function Validate(type) {
+        while(true){   	  
+            let input;
+            if(type == "Quantity:") {
+                input = prompt(type, "1");
+                if (!/^[1-9]\d*$/.test(input)) {
+                    console.log(`Verificare: ${input}`);
+                    //Input empty || testing if it has just numbers. From 1 to 9
+                    alert("Please input an integer!");
+                } else {
+                    return parseInt(input);
+                }
+                if(input == null) return alert("The product wasn't added to cart!");
+             } else if (type == "Mentions:") {
+                input = prompt(type, "No mentions");
+                if(input == undefined || input == ``) return "No mentions";
+                if(input == null) return alert("The product wasn't added to cart!");
+                return input;
+             }
+        }
+    }
+    qty = Validate("Quantity:"); 
+    if(qty) {
+        mentions = Validate("Mentions:");
+        if(mentions) actions.cart(restaurantId, id, qty, mentions);
+    }
 }
 
 function submitOrderRedirect() {
     if (parseFloat(document.getElementById("total").innerHTML.slice(8)) < parseFloat(Restaurant[selected - 1].min_order.replace('$', ''))) { //last selected restaurant -1 (Restaurant array starts from 0)
-        alert(`The minimul order threshold wasn't fulfilled! Please add products until ${Restaurant[selected - 1].min_order} threshold is passed.\nYou must add products worth: $${parseFloat(Restaurant[selected - 1].min_order.replace('$', '')) - parseFloat(document.getElementById("total").innerHTML.slice(8))} `);
+        alert(`The minimum order threshold wasn't fulfilled! Please add products until ${Restaurant[selected - 1].min_order} threshold is passed.\nYou must add products worth: $${parseFloat(Restaurant[selected - 1].min_order.replace('$', '')) - parseFloat(document.getElementById("total").innerHTML.slice(8))} `);
     } else {
         submitOrder();
     }

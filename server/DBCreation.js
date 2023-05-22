@@ -1,16 +1,21 @@
 const fs = require('fs');
 
 module.exports = function check(database) { //checking if the database exists to avoid wiping data
-    fs.access(database, fs.F_OK, (err) => { //Tryin' to acces the "database" json file
-        if (err) { //if error occured, creating file + populating it with predefined values
-            fs.writeFile(database, '',function (err) {  //creating file
-                if (err) throw err; //if the file cannot be created, then error is thrown
-                console.log(database +' database created.');
-                writingDatabase(database); //populating the json file with predefined values
-              });
-          return
-        }
-      })
+  let dir = './Database';
+  if (!fs.existsSync(dir)){
+    fs.mkdirSync(dir); //Creating Database folder
+  }
+  fs.access(database, fs.F_OK, (err) => { //Tryin' to acces the "database" json file
+      if (err) { //if error occured, creating file + populating it with predefined values
+          fs.writeFile(database, '',function (err) {  //creating file
+              if (err) throw err; //if the file cannot be created, then error is thrown
+              console.log(database +' database created.');
+              writingDatabase(database); //populating the json file with predefined values
+            });
+        return;
+      }
+    } 
+  )
 }
 
 function writingDatabase(database) {
