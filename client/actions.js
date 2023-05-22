@@ -19,8 +19,11 @@ var actions = {
     viewOrder: function (id) {
         if (id) {
             API.viewOrder(id).then(response => {
-                alert(utils.objToString(response)); //this function transforms from object elements into string to display
-            }).catch(alert);
+                HOMEDisplay(response);
+                //alert(utils.objToString(response)); //this function transforms from object elements into string to display
+            }).catch(err => {
+                alert(`Error: ${err.message}\n${err.response.data.error}`);
+            });
         } else {
             alert("Please enter the field correctly.");
         }

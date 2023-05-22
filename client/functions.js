@@ -78,13 +78,123 @@ function HOME() {
     var inputId = document.createElement("input");
     inputId.setAttribute("id", "inputId");
     content.appendChild(inputId);
-
     var button = document.createElement("input");
     button.setAttribute("type", "submit");
     button.value = "Track";
     button.setAttribute("onclick", `actions.viewOrder(document.getElementById("inputId").value)`);
     content.appendChild(button);
+    content.appendChild(document.createElement("br"));
+}
 
+function HOMEDisplay(data) {
+    let nameLabel = document.createElement("h3");
+    let nameInput = document.createElement("input");
+
+    let addressLabel = document.createElement("h3");
+    let addressInput = document.createElement("input");
+
+    let distanceLabel = document.createElement("h3");
+    let distanceInput = document.createElement("input");
+    
+    let mentionsLabel = document.createElement("h3");
+    let mentionsInput = document.createElement("input");
+
+    let timestampLabel = document.createElement("h3");
+    let timestampInput = document.createElement("input");
+
+    let orderContent = document.createElement("h3");
+    let orderContentInput = document.createElement("textarea");
+
+    let statusLabel = document.createElement("h3");
+    let statusInput = document.createElement("input");
+
+    if (!document.getElementById("idCreated") || document.getElementById("idCreated") == undefined) {
+        content.appendChild(document.createElement("br"));
+        
+        nameLabel.setAttribute("id", "idCreated");
+        nameLabel.style.display = "inline-block"; 
+        nameLabel.style.margin = "3% 2% 0.5% 0%"; //top-right-bottom-left
+        content.appendChild(nameLabel);
+        nameInput.readOnly = true;
+        nameInput.style.backgroundColor = "transparent";
+        content.appendChild(nameInput);
+        content.appendChild(document.createElement("br"));
+
+        addressLabel.style.display = "inline-block";
+        addressLabel.style.margin = "0.5% 2% 0.5% 0";
+        content.appendChild(addressLabel);
+        addressInput.readOnly = true;
+        addressInput.style.backgroundColor = "transparent";
+        content.appendChild(addressInput);
+        content.appendChild(document.createElement("br"));
+
+        distanceLabel.style.display = "inline-block";
+        distanceLabel.style.margin = "0.5% 2% 0.5% 0";
+        content.appendChild(distanceLabel);
+        distanceInput.readOnly = true;
+        distanceInput.style.backgroundColor = "transparent";
+        content.appendChild(distanceInput);
+        content.appendChild(document.createElement("br"));
+        
+        mentionsLabel.style.display = "inline-block";
+        mentionsLabel.style.margin = "0.5% 2% 0.5% 0";
+        content.appendChild(mentionsLabel);
+        mentionsInput.readOnly = true;
+        mentionsInput.style.backgroundColor = "transparent";
+        content.appendChild(mentionsInput);
+        content.appendChild(document.createElement("br"));
+
+        timestampLabel.style.display = "inline-block";
+        timestampLabel.style.margin = "0.5% 2% 0.5% 0";
+        content.appendChild(timestampLabel);
+        timestampInput.readOnly = true;
+        timestampInput.style.backgroundColor = "transparent";
+        content.appendChild(timestampInput);
+        content.appendChild(document.createElement("br"));
+
+        content.appendChild(orderContent);
+        data.content.forEach(d => {
+            orderContentInput = document.createElement("textarea");
+            orderContentInput.setAttribute("class", `orderContentInput`);
+            orderContentInput.rows = 4;
+            orderContentInput.setAttribute("style", "width: 80%; background-color: transparent; resize: none; border: none; outline: none;")
+            orderContentInput.readOnly = true;
+            content.appendChild(orderContentInput);
+            content.appendChild(document.createElement("br"));
+        });
+
+        statusLabel.style.display = "inline-block";
+        statusLabel.style.margin = "0.5% 2% 0.5% 0";
+        content.appendChild(statusLabel);
+        statusInput.readOnly = true;
+        statusInput.style.backgroundColor = "transparent";
+        content.appendChild(statusInput);
+        content.appendChild(document.createElement("br"));
+    }
+    nameLabel.innerHTML = "Name:";
+    nameInput.value = data.name;
+
+    addressLabel.innerHTML = "Address:";
+    addressInput.value = data.address;
+    
+    distanceLabel.innerHTML = "Distance:";
+    distanceInput.value = `${data.distance} km`;
+
+    mentionsLabel.innerHTML = "Mentions:";
+    mentionsInput.value = data.mentions;
+
+    timestampLabel.innerHTML = "Ordered:";
+    timestampInput.value = data.timestamp;
+
+    orderContent.innerHTML = "Order content:";
+    orderContentInput = document.getElementsByClassName(`orderContentInput`);
+
+    data.content.forEach((data, index) => {
+        orderContentInput[index].value = `Product ${index+1}:\n\tFood: ${data.food.name}\n\tQuantity: ${data.qty}\n\tYour mentions: ${data.mentions}`;
+    });
+
+    statusLabel.innerHTML = "Status: ";
+    statusInput.value = data.status;
 }
 
 function ORDER() {
@@ -126,13 +236,13 @@ function ORDER() {
     content.appendChild(document.createElement("br"));
 }
 let selected;
-function saveSelected(){
+function saveSelected() {
     selected = document.getElementById("dropDown").value;
 }
 
 function Display() {
-    if(Array.isArray(cart) && cart.length > 0) {
-        if(confirm("You cannot select another restaurant without wiping the cart. Are you sure that you want to continue?")) {
+    if (Array.isArray(cart) && cart.length > 0) {
+        if (confirm("You cannot select another restaurant without wiping the cart. Are you sure that you want to continue?")) {
             alert(`The cart was wiped and the desired restaurant was selected.`)
             cart = [];
         } else {
@@ -184,17 +294,17 @@ function Display() {
         document.querySelectorAll('.divC').forEach(menuDisp => {
             menuDisp.remove();
         });
-    } else if((x > 0) && (actions.filterWorkingHours(Restaurant[x-1].schedule) === false)) {
-        alert(`The restaurant: ${Restaurant[x-1].name} is closed. You can't select this restaurant until they open. Their schedule is: ${Restaurant[x-1].schedule}`);
-        document.getElementById('dropDown').value = selected;   
+    } else if ((x > 0) && (actions.filterWorkingHours(Restaurant[x - 1].schedule) === false)) {
+        alert(`The restaurant: ${Restaurant[x - 1].name} is closed. You can't select this restaurant until they open. Their schedule is: ${Restaurant[x - 1].schedule}`);
+        document.getElementById('dropDown').value = selected;
     } else {
         nameR.innerHTML = `Restaurant name: ${Restaurant[x - 1].name}`;
         descriptionR.innerHTML = `Restaurant description: ${Restaurant[x - 1].description}`;
-        schedule.innerHTML = `Working program: ${Restaurant[x-1].schedule}`;
-        min_order.innerHTML = `The minimum order that can be placed: ${Restaurant[x-1].min_order}`;
-        std_max_delivery_distance.innerHTML = `Standard max delivery distance: ${Restaurant[x-1].std_max_delivery_distance} km`;
-        std_delivery_price.innerHTML = `Standard delivery price: ${Restaurant[x-1].std_delivery_price}/km`;
-        extraDelFee.innerHTML = `If the distance exceeded the standard maxim distance, you'll be taxed with extra: ${Restaurant[x-1].extra_delivery_fee}/km`;
+        schedule.innerHTML = `Working program: ${Restaurant[x - 1].schedule}`;
+        min_order.innerHTML = `The minimum order that can be placed: ${Restaurant[x - 1].min_order}`;
+        std_max_delivery_distance.innerHTML = `Standard max delivery distance: ${Restaurant[x - 1].std_max_delivery_distance} km`;
+        std_delivery_price.innerHTML = `Standard delivery price: ${Restaurant[x - 1].std_delivery_price}/km`;
+        extraDelFee.innerHTML = `If the distance exceeded the standard maxim distance, you'll be taxed with extra: ${Restaurant[x - 1].extra_delivery_fee}/km`;
 
         API.viewMenus(x).then(function (result) {
             Menu = result;
@@ -272,7 +382,7 @@ function Cart() {
             let qtyL = document.createElement("p");
             let mentions = document.createElement("p");
 
-            product.innerHTML = `Product ${i+1}`;
+            product.innerHTML = `Product ${i + 1}`;
             nameL.innerHTML = `Food name:${element.food.name}`;
             descriptionL.innerHTML = `Description: ${element.food.description}`;
             price.innerHTML = `Price: ${element.food.price}`;
@@ -286,14 +396,14 @@ function Cart() {
             cDiv.appendChild(price);
             cDiv.appendChild(qtyL);
             cDiv.appendChild(mentions);
-            
+
             variable += parseFloat(element.qty * element.food.price.replace('$', ''));
         });
         let total = document.createElement("h2");
         total.setAttribute("id", "total");
         total.innerHTML = `Total: $${variable}`;
         content.appendChild(total);
-    
+
         let submit = document.createElement("input");
         submit.setAttribute("type", "submit");
         submit.value = "Submit Order";
@@ -307,18 +417,18 @@ function AddToCart(restaurantId, id) {
     actions.cart(restaurantId, id, qty, mentions);
 }
 
-function submitOrderRedirect(){
-    if(parseFloat(document.getElementById("total").innerHTML.slice(8)) < parseFloat(Restaurant[selected-1].min_order.replace('$', ''))) { //last selected restaurant -1 (Restaurant array starts from 0)
-        alert(`The minimul order threshold wasn't fulfilled! Please add products until ${Restaurant[selected-1].min_order} threshold is passed.\nYou must add products worth: $${parseFloat(Restaurant[selected-1].min_order.replace('$', '')) - parseFloat(document.getElementById("total").innerHTML.slice(8))} `);
+function submitOrderRedirect() {
+    if (parseFloat(document.getElementById("total").innerHTML.slice(8)) < parseFloat(Restaurant[selected - 1].min_order.replace('$', ''))) { //last selected restaurant -1 (Restaurant array starts from 0)
+        alert(`The minimul order threshold wasn't fulfilled! Please add products until ${Restaurant[selected - 1].min_order} threshold is passed.\nYou must add products worth: $${parseFloat(Restaurant[selected - 1].min_order.replace('$', '')) - parseFloat(document.getElementById("total").innerHTML.slice(8))} `);
     } else {
         submitOrder();
     }
 }
 
-function sendOrder(distance){
+function sendOrder(distance) {
     //calculating total price with delivery ? extra delivery
-    let extraDistance = parseFloat(Restaurant[selected-1].std_max_delivery_distance) - parseFloat(distance);
-    extraDistance = (extraDistance < 0) ? ((parseFloat(Restaurant[selected-1].std_max_delivery_distance) * parseFloat(Restaurant[selected-1].std_delivery_price.replace('$',''))) + ((-1 * parseFloat(extraDistance)) * parseFloat(Restaurant[selected-1].extra_delivery_fee.replace('$','')))) : (parseFloat(Restaurant[selected-1].std_max_delivery_distance) * parseFloat(Restaurant[selected-1].std_delivery_price.replace('$','')));
+    let extraDistance = parseFloat(Restaurant[selected - 1].std_max_delivery_distance) - parseFloat(distance);
+    extraDistance = (extraDistance < 0) ? ((parseFloat(Restaurant[selected - 1].std_max_delivery_distance) * parseFloat(Restaurant[selected - 1].std_delivery_price.replace('$', ''))) + ((-1 * parseFloat(extraDistance)) * parseFloat(Restaurant[selected - 1].extra_delivery_fee.replace('$', '')))) : (parseFloat(Restaurant[selected - 1].std_max_delivery_distance) * parseFloat(Restaurant[selected - 1].std_delivery_price.replace('$', '')));
     actions.submitOrder(parseFloat(document.getElementById("total").innerHTML.slice(8)) + parseFloat(extraDistance));
 }
 
@@ -410,7 +520,7 @@ function submitOrder() {
         let qtyL = document.createElement("p");
         let mentions = document.createElement("p");
 
-        product.innerHTML = `Product ${i+1}`;
+        product.innerHTML = `Product ${i + 1}`;
         nameL.innerHTML = `Food name:${element.food.name}`;
         descriptionL.innerHTML = `Description: ${element.food.description}`;
         price.innerHTML = `Price: ${element.food.price}`;
@@ -422,7 +532,7 @@ function submitOrder() {
         cDiv.appendChild(nameL);
         cDiv.appendChild(price);
         cDiv.appendChild(qtyL);
-        
+
         variable += parseFloat(element.qty * element.food.price.replace('$', ''));
     });
     let total = document.createElement("h2");
