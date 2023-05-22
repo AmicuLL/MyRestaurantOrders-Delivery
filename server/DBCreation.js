@@ -1,8 +1,6 @@
 const fs = require('fs');
 
-let db = './Database/database.json';
-
-module.exports = function check(database) { //checking if the database exists to avoid wipping data
+module.exports = function check(database) { //checking if the database exists to avoid wiping data
     fs.access(database, fs.F_OK, (err) => { //Tryin' to acces the "database" json file
         if (err) { //if error occured, creating file + populating it with predefined values
             fs.writeFile(database, '',function (err) {  //creating file
@@ -21,7 +19,7 @@ function writingDatabase(database) {
       name: 'Italy Belly goodies',
       _id: 1,
       description: 'Italian food',
-      schedule: '08:00 - 18:00',
+      schedule: '08:00 - 15:00',
       min_order: '$20.00',
       std_delivery_price: '$3.99',
       std_max_delivery_distance: '4.00',
@@ -30,7 +28,7 @@ function writingDatabase(database) {
       name: 'RoStaurant',
       _id: 2,
       description: 'Romanian food',
-      schedule: '10:00 - 20:00',
+      schedule: '14:00 - 20:00',
       min_order: '$16.99',
       std_delivery_price: '$1.99',
       std_max_delivery_distance: '3.00',
@@ -39,7 +37,7 @@ function writingDatabase(database) {
       name: 'German Essen',
       _id: 3,
       description: 'Restaurant mit deutschen Besonderheiten',
-      schedule: '12:00 - 22:00',
+      schedule: '19:00 - 02:00',
       min_order: '$25.39',
       std_delivery_price: '$3.49',
       std_max_delivery_distance: '5.00',
@@ -48,7 +46,7 @@ function writingDatabase(database) {
       name: 'Magyar étel. A legjobb!',
       _id: 4,
       description: 'Étterem hagyományos magyar ételekkel',
-      schedule: '14:00 - 24:00',
+      schedule: '01:00 - 08:00',
       min_order: '$35.79',
       std_delivery_price: '$2.89',
       std_max_delivery_distance: '4.50',
@@ -193,4 +191,3 @@ function writingDatabase(database) {
     console.log('Database was initialized!');
   });
 }
-//check(db);
