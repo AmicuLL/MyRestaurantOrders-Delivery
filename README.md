@@ -34,6 +34,7 @@ If the entered distance exceeds the standard delivery distance, the user will be
 with the “Extra delivery fee”.
 If the “Minimum order” is not reached the user will be alerted when trying to complete the form.
 
+Modules required: express, node-json-db (npm install express node-json-db)
 
 Steps to use the applicatation:
 - Click RESTAURANTS button located in the Header.
