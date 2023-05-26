@@ -38,7 +38,7 @@ function init() {
 
     let headerButtonAdmin = document.createElement("input");
     headerButtonAdmin.setAttribute("type", "button");
-    headerButtonAdmin.setAttribute("onclick", "ADMIN()");
+    headerButtonAdmin.setAttribute("onclick", "adminOptions()");
     headerButtonAdmin.setAttribute("class", "buttonStyle");
     headerButtonAdmin.value = "ADMIN";
     header.appendChild(headerButtonAdmin);
@@ -56,10 +56,8 @@ function init() {
 }
 
 
-let Restaurant;
-API.viewRestaurants().then(function (result) {
-    Restaurant = result;
-});
+let Restaurant = actions.getRestaurants();
+
 let Menu;
 
 function HOME() {
@@ -95,7 +93,7 @@ function HOMEDisplay(data) {
 
     let distanceLabel = document.createElement("h3");
     let distanceInput = document.createElement("input");
-    
+
     let mentionsLabel = document.createElement("h3");
     let mentionsInput = document.createElement("input");
 
@@ -113,9 +111,9 @@ function HOMEDisplay(data) {
 
     if (!document.getElementById("idCreated") || document.getElementById("idCreated") == undefined) {
         content.appendChild(document.createElement("br"));
-        
+
         nameLabel.setAttribute("id", "idCreated");
-        nameLabel.style.display = "inline-block"; 
+        nameLabel.style.display = "inline-block";
         nameLabel.style.margin = "3% 2% 0.5% 0%"; //top-right-bottom-left
         content.appendChild(nameLabel);
         nameInput.readOnly = true;
@@ -138,7 +136,7 @@ function HOMEDisplay(data) {
         distanceInput.style.backgroundColor = "transparent";
         content.appendChild(distanceInput);
         content.appendChild(document.createElement("br"));
-        
+
         mentionsLabel.style.display = "inline-block";
         mentionsLabel.style.margin = "0.5% 2% 0.5% 0";
         content.appendChild(mentionsLabel);
@@ -195,7 +193,7 @@ function HOMEDisplay(data) {
 
     addressLabel.innerHTML = "Address:";
     addressInput.value = data.address;
-    
+
     distanceLabel.innerHTML = "Distance:";
     distanceInput.value = `${data.distance} km`;
 
@@ -209,7 +207,7 @@ function HOMEDisplay(data) {
     orderContentInput = document.getElementsByClassName(`orderContentInput`);
 
     data.content.forEach((data, index) => {
-        orderContentInput[index].value = `Product ${index+1}:\n\tFood: ${data.food.name}\n\tQuantity: ${data.qty}\n\tYour mentions: ${data.mentions}`;
+        orderContentInput[index].value = `Product ${index + 1}:\n\tFood: ${data.food.name}\n\tQuantity: ${data.qty}\n\tYour mentions: ${data.mentions}`;
     });
 
     totalOrder.innerHTML = "Total:";
@@ -221,14 +219,17 @@ function HOMEDisplay(data) {
 
 function ORDER() {
     //Removing all elements
-    document.getElementById("content").remove();
-    content = document.createElement("div");
-    content.setAttribute("id", "content");
-    content.setAttribute("class", "left");
-    container.appendChild(content);
+    if (document.getElementById("content")) {
+        document.getElementById("content").remove();
+        content = document.createElement("div");
+        content.setAttribute("id", "content");
+        content.setAttribute("class", "left");
+        container.appendChild(content);
+    }
 
     var label = document.createElement("label")
     label.innerHTML = "Choose the restaurant:";
+    label.id = "RestaurantSelection";
     label.setAttribute("class", "left");
     label.style.fontSize = "130%";
     label.style.fontWeight = "bold";
@@ -435,9 +436,9 @@ function Cart() {
 }
 function AddToCart(restaurantId, id) {
     function Validate(type) {
-        while(true){   	  
+        while (true) {
             let input;
-            if(type == "Quantity:") {
+            if (type == "Quantity:") {
                 input = prompt(type, "1");
                 if (!/^[1-9]\d*$/.test(input)) {
                     console.log(`Verificare: ${input}`);
@@ -446,19 +447,19 @@ function AddToCart(restaurantId, id) {
                 } else {
                     return parseInt(input);
                 }
-                if(input == null) return alert("The product wasn't added to cart!");
-             } else if (type == "Mentions:") {
+                if (input == null) return alert("The product wasn't added to cart!");
+            } else if (type == "Mentions:") {
                 input = prompt(type, "No mentions");
-                if(input == undefined || input == ``) return "No mentions";
-                if(input == null) return alert("The product wasn't added to cart!");
+                if (input == undefined || input == ``) return "No mentions";
+                if (input == null) return alert("The product wasn't added to cart!");
                 return input;
-             }
+            }
         }
     }
-    qty = Validate("Quantity:"); 
-    if(qty) {
+    qty = Validate("Quantity:");
+    if (qty) {
         mentions = Validate("Mentions:");
-        if(mentions) actions.cart(restaurantId, id, qty, mentions);
+        if (mentions) actions.cart(restaurantId, id, qty, mentions);
     }
 }
 
@@ -472,9 +473,14 @@ function submitOrderRedirect() {
 
 function sendOrder(distance) {
     //calculating total price with delivery ? extra delivery
-    let extraDistance = parseFloat(Restaurant[selected - 1].std_max_delivery_distance) - parseFloat(distance);
-    extraDistance = (extraDistance < 0) ? ((parseFloat(Restaurant[selected - 1].std_max_delivery_distance) * parseFloat(Restaurant[selected - 1].std_delivery_price.replace('$', ''))) + ((-1 * parseFloat(extraDistance)) * parseFloat(Restaurant[selected - 1].extra_delivery_fee.replace('$', '')))) : (parseFloat(Restaurant[selected - 1].std_max_delivery_distance) * parseFloat(Restaurant[selected - 1].std_delivery_price.replace('$', '')));
-    actions.submitOrder(parseFloat(document.getElementById("total").innerHTML.slice(8)) + parseFloat(extraDistance));
+    if (Restaurant[selected - 1].std_max_delivery_distance !== 'No limit') {
+        let extraDistance = parseFloat(Restaurant[selected - 1].std_max_delivery_distance) - parseFloat(distance);
+        extraDistance = (extraDistance < 0) ? ((parseFloat(Restaurant[selected - 1].std_max_delivery_distance) * parseFloat(Restaurant[selected - 1].std_delivery_price.replace('$', ''))) + ((-1 * parseFloat(extraDistance)) * parseFloat(Restaurant[selected - 1].extra_delivery_fee.replace('$', '')))) : (parseFloat(Restaurant[selected - 1].std_max_delivery_distance) * parseFloat(Restaurant[selected - 1].std_delivery_price.replace('$', '')));
+        actions.submitOrder(parseFloat(document.getElementById("total").innerHTML.slice(8)) + parseFloat(extraDistance));
+    } else {
+        let transportFee = parseFloat(distance) * Restaurant[selected - 1].std_delivery_price;
+        actions.submitOrder(parseFloat(document.getElementById("total").innerHTML.slice(8)) + parseFloat(transportFee));
+    }
 }
 
 function submitOrder() {
@@ -521,7 +527,11 @@ function submitOrder() {
     let submit = document.createElement("input");
     submit.setAttribute("type", "submit");
     submit.value = "Complete Order!";
-    submit.setAttribute("onclick", `sendOrder(document.getElementById("orderDistance").value)`);
+    submit.onclick = () => {
+        if (!validateNum(distance.value.replace("km", ""))) return alert("The distance must be a number!");
+        sendOrder(distance.value.replace("km", ""))
+    }
+    //submit.setAttribute("onclick", `sendOrder(document.getElementById("orderDistance").value)`);
 
     name.setAttribute("id", "orderName");
     nameL.innerHTML = "[Required]Name:";

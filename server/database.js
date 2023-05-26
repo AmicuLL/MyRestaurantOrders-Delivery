@@ -1,5 +1,5 @@
-const { JsonDB } = require( 'node-json-db' );
-const { Config } = require( 'node-json-db/dist/lib/JsonDBConfig' );
+const { JsonDB } = require('node-json-db');
+const { Config } = require('node-json-db/dist/lib/JsonDBConfig');
 
 var DBCreation = require('./DBCreation.js');
 DBCreation("./Database/database.json"); //to autopopulate database

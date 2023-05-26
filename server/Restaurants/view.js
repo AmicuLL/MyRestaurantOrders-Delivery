@@ -8,7 +8,7 @@ module.exports = async (req, res) => {
 
     const Restaurant = data.find(restaurant => restaurant._id == req.params.id); //finding the restaurant with given id as param ??? IS NOT USED
 
-    if (!Restaurant) return res.status(404).json({ error: "Order with that key was not found" });
+    if (!Restaurant) return res.status(404).json({ error: "Restaurant with that id was not found" });
 
     res.status(200).json(Restaurant);
   }

@@ -34,13 +34,13 @@ If the entered distance exceeds the standard delivery distance, the user will be
 with the “Extra delivery fee”.
 If the “Minimum order” is not reached the user will be alerted when trying to complete the form.
 
-Modules required: express, node-json-db (npm install express node-json-db)
+Modules required: express, node-json-db, multer (npm install express node-json-db multer)
 
-Steps to use the applicatation:
+Steps to use the application:
 - Click RESTAURANTS button located in the Header.
 - There are a dropdown menu that let you select one of the saved restaurants with the condition that the current time is within the working hours. Once the restaurant is selected, the details of the restaurant and its menu are displayed.
 - Adding products to cart is done by pressing "Add to cart" button on desired product.
 - After adding the products, press the "CART" button located in the Header to to proceed with the order.
 - The cart will list all the products added with all the information submitted by you (The product, Quantity, Mentions). The total price is only for the products, without transportation fee.
 - To access the completion form, press the "Submit Order" button and enter the required details (Required input: Name, Address, Distance and the cart must contain at least 1 item)
-- After pressing the "Complete order!" button, the page will send you a popup containing the order key for tracking. With that key, go to the home page by pressing the "HOME" button in the Header section and paste the code in the input form and click "Track". The alert that appears contains the information about your order with "total" being the total price with transport fees and also, if the maximum distance has been exceeded, with the additional delivery fee.
+- After pressing the "Complete order!" button, the page will send you a popup containing the order key for tracking. With that key, go to the home page by pressing the "HOME" button in the Header section and paste the code in the input form and click "Track". On home page new elements are created and contains the information about your order with "total" being the total price with transport fees and also, if the maximum distance has been exceeded, with the additional delivery fee.

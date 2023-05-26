@@ -3,7 +3,7 @@ var actions = {
     submitOrder: function (value) {
         let name = document.getElementById("orderName").value; //required parameter
         let address = document.getElementById("orderAddress").value; //required parameter
-        let distance = document.getElementById("orderDistance").value; //required parameter
+        let distance = document.getElementById("orderDistance").value.replace("km", ""); //required parameter
         let mentions = document.getElementById("orderMentions").value; //optional parameter
         if (name && address && distance && cart) { //validating values
             cart = JSON.stringify(cart, null, 2); //parsing object into string for post method
@@ -28,14 +28,8 @@ var actions = {
             alert("Please enter the field correctly.");
         }
     },
-    getRestaurants: function () { //unused at this moment
-        API.viewRestaurants().then(response => {
-            //alert(`Name: ${response[1].name}\nDescription: ${response[1].description}`);
-            response.forEach(element => {
-
-            });
-        });
-
+    getRestaurants: function () {
+        API.viewRestaurants().then((data) => { Restaurant = data })
     },
     cart: function (RestId, id, qty, mentions) { //function to add the content from cart into a array that will be pushed into database as json string through post method
         let food;
@@ -72,7 +66,50 @@ var actions = {
             }
         }
         return false; //otherwise is not between schedule
-    }
+    },
+    addMenu: function (id) {
+        let name = document.getElementById("foodName").value;
+        let description = document.getElementById("foodDescription").value;
+        let price = document.getElementById("foodPrice").value;
+        let src_img = (document.getElementById("foodImage").value) ? document.getElementById("foodImage").value.split('\\').pop() : ""; //extracting just the name
+        if (document.getElementById("foodImage").value) {
+            var imageFile = document.getElementById("foodImage").files[0];
+            if (imageFile) {
+                var formData = new FormData();
+                formData.append('image', imageFile);
+                formData.headers = { 'Content-Type': 'multipart/form-data' };
+                actions.upload(formData, document.getElementById("foodImage").value.split('\\').pop());
+            }
+        }
+        API.addMenu(id, name, description, price, src_img).then(response => {
+            alert(utils.objToString(response.data.food)); //After post is done, the key that was created in server/Orders/create.js is returned and shown
+        }).catch(alert)
+    },
+    upload: function (data, name) {
+        API.uploadFiles(data, name).then(response => {
+            console.log('The upload was successful');
+            document.getElementById("foodName").value = ""; //after the menu was added, the fields are reinitialized (the previous information is deleted)
+            document.getElementById("foodDescription").value = "";
+            document.getElementById("foodPrice").value = "";
+            document.getElementById("foodImage").value = "";
+        }).catch(err => {
+            console.log('Error occurred during upload:', err);
+        });
+    },
+    addRestaurant: function () {
+        let name = document.getElementById("restName").value;
+        let description = document.getElementById("restDescription").value;
+        let schedule = `${document.getElementById("restSSchedule").value} - ${document.getElementById("restESchedule").value}`;
+        let min_order = (document.getElementById("restMinOrder").value == 'No limit') ? '' : document.getElementById("restMinOrder").value;
+        let std_delivery_price = document.getElementById("restStdDelPrc").value;
+        let std_max_delivery_distance = (document.getElementById("restStdMaxDelDist").value == 'No limit') ? '' : document.getElementById("restStdMaxDelDist").value;
+        let extra_delivery_fee = (document.getElementById("restExtraDelFee").value == 'No limit') ? '' : document.getElementById("restExtraDelFee").value;
+        //optional: extra,stdmaxdel, minorder
+        API.addRestaurant(name, schedule, description, min_order, std_max_delivery_distance, std_delivery_price, extra_delivery_fee).then(response => {
+            alert(utils.objToString(response));
+            adminOptions("addRestaurant")
+        }).catch(alert)
+    },
 };
 var utils = { //function to transform from objects into strings
     objToString: (o) => {
