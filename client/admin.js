@@ -132,10 +132,10 @@ function adminOptions(option) {
                         extra_delivery_feeInput.value = 'No limit';
                     }
                     if (extra_delivery_feeInput.value == 'No limit' && std_max_delivery_distanceInput.value != 'No limit') return alert(`The restaurant was not added because you limited the "Standard Maximum Delivery Distance" value to: ${std_max_delivery_distanceInput.value}. So you have to add a price to the extra delivery (Extra delivery fee).`);
-                    if (extra_delivery_feeInput.value != 'No limit' && !validateNum(extra_delivery_feeInput.value.replace("$", "")) && extra_delivery_feeInput.value.replace("$", "") > 0) return alert("The extra delivery fee must be a number!");
-                    if (min_orderInput.value != 'No limit' && !validateNum(min_orderInput.value.replace('$', '')) && min_orderInput.value.replace("$", "") > 0) return alert("The minimum order value must be a number!");
-                    if (std_delivery_priceInput.value && !validateNum(std_delivery_priceInput.value) && std_delivery_priceInput.value > 0) return alert("The standard delivery fee must be a number!");
-                    if (std_max_delivery_distanceInput.value != 'No limit' && !validateNum(std_max_delivery_distanceInput.value) && std_max_delivery_distanceInput.value > 0) return alert("The standard maximum distance value must be a number!");
+                    if (extra_delivery_feeInput.value != 'No limit' && !validateNum(extra_delivery_feeInput.value.replace("$", "")) && extra_delivery_feeInput.value.replace("$", "") < 0) return alert("The extra delivery fee must be a number!");
+                    if (min_orderInput.value != 'No limit' && !validateNum(min_orderInput.value.replace('$', '')) && min_orderInput.value.replace("$", "") < 0) return alert("The minimum order value must be a number!");
+                    if (std_delivery_priceInput.value && !validateNum(std_delivery_priceInput.value) && std_delivery_priceInput.value < 0) return alert("The standard delivery fee must be a number!");
+                    if (std_max_delivery_distanceInput.value != 'No limit' && !validateNum(std_max_delivery_distanceInput.value) && std_max_delivery_distanceInput.value < 0) return alert("The standard maximum distance value must be a number!");
                     if (nameInput.value.length < 3) return alert("The name cannot be shorter than 3 characters!");
                     actions.addRestaurant();
                 } else {
@@ -217,7 +217,7 @@ function adminOptions(option) {
                 let upload = document.createElement("button");
                 upload.innerHTML = "Add food to the menu";
                 upload.onclick = () => {
-                    if (validateNum(!priceInput.value) && priceInput.value > 0) return alert("Food price should be an integer and positive!");
+                    if (!validateNum(priceInput.value) || priceInput.value <= 0) return alert("Food price should be a number and positive!");
                     if (nameInput.value.length < 3) return alert("The food name should be longer than 3 chars!");
                     actions.addMenu("parseInt(document.getElementById(\"dropDown\").value)");
                 }
