@@ -1,4 +1,4 @@
-# FirstBackend
+# Food Delivery App - MyRestaurantOrders
 
 The application allows users to order food from a variety of restaurants.
 
